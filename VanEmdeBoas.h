@@ -1,5 +1,6 @@
 //
 // Created by Crystina on 26/9/2020.
+// reference: https://www.geeksforgeeks.org/van-emde-boas-tree-set-3-successor-and-predecessor
 //
 #ifndef CODEBASE_VANEMDEBOAS_H
 #define CODEBASE_VANEMDEBOAS_H
@@ -25,6 +26,8 @@ public:
     int maximum();
     void insert(int key);
     bool isMember(int key);
+    int successor(int key);
+    int predecessor(int key);
 };
 
 

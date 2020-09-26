@@ -6,7 +6,7 @@
 #define CODEBASE_VANEMDEBOAS_H
 
 #include <vector>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 using namespace std;
 
 class VanEmdeBoas {
@@ -28,6 +28,7 @@ public:
     bool isMember(int key);
     int successor(int key);
     int predecessor(int key);
+    void remove(int key);
 };
 
 

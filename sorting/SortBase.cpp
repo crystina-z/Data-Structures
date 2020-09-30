@@ -18,3 +18,5 @@ void Sort::print(int* arr, int size) {
     printf("\n");
 }
 
+
+void Sort::sort() {}

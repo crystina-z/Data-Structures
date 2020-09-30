@@ -17,7 +17,7 @@ void MergeSort::merge(int *arr, int l, int mid, int r) {
     int tmp[r-l];
     int left_i = l, right_i = mid, sort_i = 0;
     while (left_i < mid or right_i < r) {
-        if ((right_i > r) || (left_i < mid && arr[left_i] < arr[right_i])) {
+        if ((right_i >= r) || (left_i < mid && arr[left_i] < arr[right_i])) {
             tmp[sort_i] = arr[left_i];
             left_i += 1;
         } else {
@@ -25,10 +25,9 @@ void MergeSort::merge(int *arr, int l, int mid, int r) {
             tmp[sort_i] = arr[right_i];
             right_i += 1;
         } // if
+        sort_i += 1;
     } // while
-
-    int numBytes = sizeof(arr[0]) * (r - l);
-    std::memcpy(&(arr[l]), tmp, numBytes);
+    for (int i = 0; i < (r - l); i++) { arr[l+i] = tmp[i]; }
 }
 
 void MergeSort::sort() {
@@ -49,9 +48,14 @@ void MergeSort::sort(int *arr, int arrSize, int l, int r) {
 
 
 int main() {
-    printf("::SORT::");
-    int test[] = {2, 33, 5, 77, 8, 99};
-    MergeSort obj(test, 6);
+    printf("::SORT::\n");
+    int test[] = {2, 33, 5, 77, 100, 9, 10, 8, 99};
+    MergeSort obj(test, 9);
+
+    printf("Before sorting: \n");
+    obj.print();
     obj.sort();
+
+    printf("After sorting: \n");
     obj.print();
 }

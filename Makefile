@@ -7,7 +7,7 @@ FILES = sorting/MergeSort.cpp sorting/SortBase.cpp VanEmdeBoas.cpp
 MERGESORT_OBJECTS = sorting/MergeSort.o sorting/SortBase.o
 VEB_OBJECTS = VanEmdeBoas.o
 
-OBJECTS = $(MERGESORT_OBJECTS)
+OBJECTS = $(MERGESORT_OBJECTS) $(VEB_OBJECTS)
 DEPENDS = $(OBJECTS:.o=.d)
 EXECS = mergesort veb
 

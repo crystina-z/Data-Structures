@@ -159,9 +159,17 @@ void VanEmdeBoas::print() {
 
     printf("%i ", min);
     int cur = min;
-    while ((cur = successor(cur)) != -1) {
-        printf("%i ", cur);
-    }
+    while ((cur = successor(cur)) != -1) { printf("%i ", cur); }
+    printf("\n");
+}
+
+
+void VanEmdeBoas::reverse_print() {
+    if (min == -1) return;
+    printf("%i ", max);
+
+    int cur = max;
+    while ((cur = predecessor(cur)) != -1) { printf("%i ", cur); }
     printf("\n");
 }
 
@@ -183,5 +191,6 @@ int main() {
 
     veb.remove(1);
     printf("After removing 1: "); veb.print();
+    printf("After removing 1: "); veb.reverse_print();
 
 }

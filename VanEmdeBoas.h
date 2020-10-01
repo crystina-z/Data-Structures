@@ -29,6 +29,7 @@ public:
     void remove(int key);
 
     void print();
+    void reverse_print();
 };
 
 

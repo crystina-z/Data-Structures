@@ -3,6 +3,7 @@
 //
 
 #include <math.h>
+#include <assert.h>
 #include "VanEmdeBoas.h"
 
 VanEmdeBoas::VanEmdeBoas(int size): universe_size(size) {
@@ -27,25 +28,32 @@ int VanEmdeBoas::high(int x) { return x / (int)ceil(sqrt(universe_size)); }
 
 int VanEmdeBoas::low(int x) { return x % (int)ceil(sqrt(universe_size)); }
 
-int VanEmdeBoas::generate_index(int x, int y) { return x * (int)ceil(sqrt(universe_size)) + y; }
+int VanEmdeBoas::generate_index(int x, int y) {
+    assert(x >= 0 && y >= 0);
+    int i = x * (int)ceil(sqrt(universe_size)) + y;
+    return i;
+}
 
 void VanEmdeBoas::insert(int key) {
     if (min == -1) { min = key; max = key; return; }    // if the tree was empty
 
-    if (key < min) { swap(min, key); }  // ??
+    if (key < min) { swap(min, key); }  // lazy propagation
+    // temporarily store the new min here, and continue with the old key
 
     if (universe_size > 2) {
-        int cluster_id = high(key), subkey = low(key);
-        if (clusters[cluster_id]->min == -1) {
+        int cluster_id = high(key), subkey = low(key);  // recursively go deep
+        if (clusters[cluster_id]->min == -1) {  // the cluster was empty
             summary->insert(cluster_id);
             clusters[cluster_id]->min = subkey;
             clusters[cluster_id]->max = subkey;
-        } else {
+        } else {    // the cluster was not empty
             clusters[cluster_id]->insert(subkey);
         }
     }
 
-    if (key > max) { max = key; }  // ??
+    if (key > max) { max = key; }
+    // CASE 1: current node is not leaf: max value is always already stored in sub-trees;
+    // CASE 2: current node is leaf: if such condition holds, then max must be equal to the min before
 }
 
 bool VanEmdeBoas::isMember(int key) {
@@ -57,33 +65,59 @@ bool VanEmdeBoas::isMember(int key) {
 }
 
 int VanEmdeBoas::successor(int key) {
+    // base cases
     if (universe_size == 2) {
         if (key == 0 && max == 1) { return 1; }
         return -1;
     }
+    if (min != -1 && key < min) { return min; } // TODO: when would we reach here?
+    // Crystina: if (key > max) { return -1; } ?
 
-    if (min != -1 && key < min) { return min; }
-
+    // if the key falls in the range (min, max): find its cluster and then search there
     int cluster_id = high(key), subkey = low(key);
 
     int max_in_cluster = clusters[cluster_id]->max;
-    if (max_in_cluster != -1 && subkey < max_in_cluster) {
+    if (max_in_cluster != -1 && subkey < max_in_cluster) { // if the cluster which the KEY belongs to is not empty
         int offset = clusters[cluster_id]->successor(subkey);
         return generate_index(cluster_id, offset);
     }
 
-    // why would we need to check the next cluster?
+    // if not found: the key is not in current cluster
+    // BUT THEN WHY WOULD IT BE ASSIGNED TO THIS CLUSTER?
     int succ_cluster_id = summary->successor(cluster_id);  // check next cluster
     if (succ_cluster_id == -1) { return -1; }   // no next cluster
 
-    int offset = clusters[cluster_id]->min;
+    int offset = clusters[succ_cluster_id]->min;
     return generate_index(succ_cluster_id, offset);
 }
 
-int VanEmdeBoas::predecessor(int key) { return false; }
+int VanEmdeBoas::predecessor(int key) {
+    if (universe_size == 2) {
+        if (key == 1 && min == 0) { return 0; }
+        return -1;
+    }
+    if (max != -1 && key > max) { return max; }
+
+    int cluster_id = high(key), subkey = low(key);
+
+    int min_cluster = clusters[cluster_id]->min;
+    if (min_cluster != -1 && subkey > min_cluster) {
+        int offset = clusters[cluster_id]->predecessor(subkey);
+        return generate_index(cluster_id, offset);
+    }
+
+    int pred_cluster = summary->predecessor(cluster_id);
+    if (pred_cluster == -1) {
+        if (min != -1 && key > min) { return min; }
+        return -1;
+    }
+
+    int offset = clusters[pred_cluster]->max;
+    return generate_index(pred_cluster, offset);
+}
 
 void VanEmdeBoas::remove(int key) {
-    if (min == max) { min = -1; max = -1; return }
+    if (min == max) { min = -1; max = -1; return; }
     if (universe_size == 2) {
         if (key == 0) { min = 1; }
         else { min = 0; }
@@ -98,8 +132,8 @@ void VanEmdeBoas::remove(int key) {
         min = key;
     }
 
-    int cluster_id, subkey = high(key), low(key);
-    clusters[cluster_id)]->remove(subkey);
+    int cluster_id = high(key), subkey = low(key);
+    clusters[cluster_id]->remove(subkey);
 
     if (clusters[cluster_id]->min == -1) {
         summary->remove(cluster_id);
@@ -116,4 +150,36 @@ void VanEmdeBoas::remove(int key) {
     if (key == max) {
         max = generate_index(cluster_id, clusters[cluster_id]->max);
     }
+}
+
+void VanEmdeBoas::print() {
+    if (min == -1) return;
+
+    printf("[MIN: %i MAX: %i]\t", min, max);
+
+    printf("%i ", min);
+    int cur = min;
+    while ((cur = successor(cur)) != -1) {
+        printf("%i ", cur);
+    }
+    printf("\n");
+}
+
+int main() {
+    printf("::VEB::\n");
+    VanEmdeBoas veb(10);
+
+    veb.insert(10);
+    veb.insert(4);
+    veb.insert(8);
+    veb.insert(3);
+    veb.insert(2);
+
+    veb.insert(6);
+    veb.insert(1);
+    veb.insert(7);
+    veb.insert(5);
+    veb.insert(9);
+
+    veb.print();
 }

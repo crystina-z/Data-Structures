@@ -22,13 +22,13 @@ public:
     int generate_index(int x, int y);   // return the value from cluster number and position
 
     VanEmdeBoas(int size);
-    int minimum();
-    int maximum();
     void insert(int key);
     bool isMember(int key);
     int successor(int key);
     int predecessor(int key);
     void remove(int key);
+
+    void print();
 };
 
 

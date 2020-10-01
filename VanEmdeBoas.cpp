@@ -126,9 +126,9 @@ void VanEmdeBoas::remove(int key) {
     }
 
     if (key == min) {
-        int first_cluster_id = summary->min;
-        // but we havn't remove anything? and won't key be overwritten??
+        int first_cluster_id = summary->min; // but we havn't remove anything? and won't key be overwritten??
         key = generate_index(first_cluster_id, clusters[first_cluster_id]->min);
+        // as the mininum is not propagated to the next layer?
         min = key;
     }
 
@@ -169,17 +169,19 @@ int main() {
     printf("::VEB::\n");
     VanEmdeBoas veb(10);
 
-    veb.insert(10);
-    veb.insert(4);
-    veb.insert(8);
-    veb.insert(3);
-    veb.insert(2);
-
-    veb.insert(6);
-    veb.insert(1);
-    veb.insert(7);
-    veb.insert(5);
-    veb.insert(9);
-
+    // test insert
+    veb.insert(10); veb.insert(4); veb.insert(8); veb.insert(3); veb.insert(2);
+    veb.insert(6); veb.insert(1); veb.insert(7); veb.insert(5); veb.insert(9);
     veb.print();
+
+    // test delete
+    veb.remove(4);
+    printf("After removing 4: "); veb.print();
+
+    veb.remove(7);
+    printf("After removing 7: "); veb.print();
+
+    veb.remove(1);
+    printf("After removing 1: "); veb.print();
+
 }

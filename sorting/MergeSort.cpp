@@ -47,15 +47,15 @@ void MergeSort::sort(int *arr, int arrSize, int l, int r) {
 }
 
 
-int main() {
-    printf("::SORT::\n");
-    int test[] = {2, 33, 5, 77, 100, 9, 10, 8, 99};
-    MergeSort obj(test, 9);
-
-    printf("Before sorting: \n");
-    obj.print();
-    obj.sort();
-
-    printf("After sorting: \n");
-    obj.print();
-}
+//int main() {
+//    printf("::SORT::\n");
+//    int test[] = {2, 33, 5, 77, 100, 9, 10, 8, 99};
+//    MergeSort obj(test, 9);
+//
+//    printf("Before sorting: \n");
+//    obj.print();
+//    obj.sort();
+//
+//    printf("After sorting: \n");
+//    obj.print();
+//}

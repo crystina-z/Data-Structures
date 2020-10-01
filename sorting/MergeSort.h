@@ -10,13 +10,13 @@
 
 class MergeSort: public Sort{
 private:
-    void merge(int *arr, int l, int mid, int r);
+    virtual void merge(int *arr, int l, int mid, int r);
 
 public:
     MergeSort();
     MergeSort(int *arr, int arrSize);
 
-    void sort();    // parent's virtual function
+    virtual void sort();    // parent's virtual function
     void sort(int *arr, int arrSize, int l = -1, int r = -1);
 };
 
